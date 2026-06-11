@@ -12,7 +12,7 @@ export const ContactSection: React.FC = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     
@@ -23,12 +23,39 @@ export const ContactSection: React.FC = () => {
 
     setIsSubmitting(true);
 
-    // Simulate sending email API
-    setTimeout(() => {
+    // Get the key from .env file or fallback to string edit
+    const accessKey = import.meta.env.VITE_WEB3FORMS_KEY || "YOUR_WEB3FORMS_ACCESS_KEY_HERE";
+
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json"
+        },
+        body: JSON.stringify({
+          access_key: accessKey,
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject || "Portfolio Contact Message",
+          message: formData.message,
+          from_name: "Siva's Portfolio Visitor"
+        })
+      });
+
+      const result = await response.json();
+
+      if (response.status === 200 && result.success) {
+        setIsSent(true);
+        setFormData({ name: '', email: '', subject: '', message: '' });
+      } else {
+        setError(result.message || "Failed to send message. Please ensure your access key is correct.");
+      }
+    } catch (err) {
+      setError("Network error. Please check your connection and try again.");
+    } finally {
       setIsSubmitting(false);
-      setIsSent(true);
-      setFormData({ name: '', email: '', subject: '', message: '' });
-    }, 1500);
+    }
   };
 
   return (
