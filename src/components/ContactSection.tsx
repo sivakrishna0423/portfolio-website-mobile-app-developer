@@ -24,7 +24,7 @@ export const ContactSection: React.FC = () => {
     setIsSubmitting(true);
 
     // Get the key from .env file or fallback to string edit
-    const accessKey = import.meta.env.VITE_WEB3FORMS_KEY || "YOUR_WEB3FORMS_ACCESS_KEY_HERE";
+    const accessKey = import.meta.env.VITE_WEB3FORMS_KEY || "c838421d-acf7-4bf2-a796-ee8502fbb277";
 
     try {
       const response = await fetch("https://api.web3forms.com/submit", {
