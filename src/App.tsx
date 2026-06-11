@@ -1,6 +1,7 @@
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { ProjectsSection } from './components/ProjectsSection';
+import { PlayStoreHighlight } from './components/PlayStoreHighlight';
 import { SkillsMatrix } from './components/SkillsMatrix';
 import { ExperienceTimeline } from './components/ExperienceTimeline';
 import { ContactSection } from './components/ContactSection';
@@ -19,6 +20,9 @@ function App() {
 
         {/* Interactive Projects Showcase (Includes Phone Simulator) */}
         <ProjectsSection />
+
+        {/* Dedicated Published Play Store Highlight */}
+        <PlayStoreHighlight />
 
         {/* Filterable Skills Grid */}
         <SkillsMatrix />
