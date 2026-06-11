@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { 
   Wifi, Battery, Signal, CheckCircle2, Circle, Clock, Flame, 
   Award, Play, Lock, AlertCircle, Droplets, Sparkles,
-  Camera, HeartPulse
+  Camera, HeartPulse, MessageSquare, TrendingUp, Newspaper
 } from 'lucide-react';
 
 interface Project {
@@ -23,9 +23,10 @@ export const PhoneSimulator = ({ activeProjectId }: PhoneSimulatorProps) => {
   const [painLevel, setPainLevel] = useState(3);
   const [waterAmount, setWaterAmount] = useState(1.8);
   const [selectedArItem, setSelectedArItem] = useState('Glasses');
-  const [calculatorTab, setCalculatorTab] = useState<'EMI' | 'SIP' | 'GST'>('EMI');
+  const [calculatorTab, setCalculatorTab] = useState<'EMI' | 'SIP' | 'GST' | 'GoldNews' | 'AIAdvisor'>('EMI');
   const [loanAmount, setLoanAmount] = useState(5000000);
   const [activeAviationModule, setActiveAviationModule] = useState(1);
+  const [advisorPrompt, setAdvisorPrompt] = useState<number | null>(null);
 
   // Keep phone time synced with current time
   useEffect(() => {
@@ -339,24 +340,31 @@ export const PhoneSimulator = ({ activeProjectId }: PhoneSimulatorProps) => {
         </div>
 
         {/* Tab Selection */}
-        <div style={{ display: 'flex', backgroundColor: 'rgba(255,255,255,0.03)', borderRadius: '6px', padding: '2px', marginBottom: '8px' }}>
-          {(['EMI', 'SIP', 'GST'] as const).map((tab) => (
+        <div style={{ display: 'flex', backgroundColor: 'rgba(255,255,255,0.03)', borderRadius: '6px', padding: '2px', marginBottom: '8px', gap: '2px' }}>
+          {[
+            { id: 'EMI', label: 'EMI' },
+            { id: 'SIP', label: 'SIP' },
+            { id: 'GoldNews', label: 'Gold/News' },
+            { id: 'AIAdvisor', label: 'AI Advisor' }
+          ].map((tab) => (
             <button
-              key={tab}
-              onClick={() => setCalculatorTab(tab)}
+              key={tab.id}
+              onClick={() => setCalculatorTab(tab.id as any)}
               style={{
                 flex: 1,
-                padding: '4px 0',
+                padding: '5px 0',
                 border: 'none',
                 borderRadius: '4px',
-                fontSize: '10px',
-                fontWeight: '600',
-                backgroundColor: calculatorTab === tab ? '#06b6d4' : 'transparent',
-                color: calculatorTab === tab ? '#090c15' : '#94a3b8',
-                cursor: 'pointer'
+                fontSize: '8px',
+                fontWeight: '700',
+                backgroundColor: calculatorTab === tab.id ? '#06b6d4' : 'transparent',
+                color: calculatorTab === tab.id ? '#090c15' : '#94a3b8',
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                whiteSpace: 'nowrap'
               }}
             >
-              {tab}
+              {tab.label}
             </button>
           ))}
         </div>
@@ -438,6 +446,103 @@ export const PhoneSimulator = ({ activeProjectId }: PhoneSimulatorProps) => {
               <div style={{ fontSize: '9px', color: '#94a3b8' }}>TOTAL BILLING AMOUNT</div>
               <div style={{ fontSize: '16px', fontWeight: '800', color: '#06b6d4', margin: '2px 0' }}>₹ 29,500</div>
               <div style={{ fontSize: '8px', color: '#64748b' }}>CGST (9%): ₹ 2,250 | SGST (9%): ₹ 2,250</div>
+            </div>
+          </div>
+        )}
+
+        {calculatorTab === 'GoldNews' && (
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '11px', animation: 'fadeIn 0.3s' }}>
+            {/* Live Gold Rates */}
+            <div className="phone-ui-card" style={{ padding: '8px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '10px', color: '#10b981', fontWeight: 'bold', marginBottom: '6px' }}>
+                <TrendingUp size={12} /> Live Gold Rates (MCX India)
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                <div style={{ padding: '6px', borderRadius: '6px', backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)' }}>
+                  <div style={{ fontSize: '8px', color: '#64748b' }}>24K Gold (10g)</div>
+                  <div style={{ fontSize: '11px', fontWeight: 'bold', color: '#f59e0b' }}>₹ 72,450</div>
+                  <div style={{ fontSize: '7px', color: '#10b981' }}>▲ +0.85%</div>
+                </div>
+                <div style={{ padding: '6px', borderRadius: '6px', backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)' }}>
+                  <div style={{ fontSize: '8px', color: '#64748b' }}>22K Gold (10g)</div>
+                  <div style={{ fontSize: '11px', fontWeight: 'bold', color: '#cbd5e1' }}>₹ 66,410</div>
+                  <div style={{ fontSize: '7px', color: '#10b981' }}>▲ +0.78%</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Financial News */}
+            <div className="phone-ui-card" style={{ padding: '8px', display: 'flex', flexDirection: 'column', gap: '6px', overflowY: 'auto' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '10px', color: '#06b6d4', fontWeight: 'bold', marginBottom: '4px' }}>
+                <Newspaper size={12} /> Top Financial News
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                {[
+                  { title: "RBI Repo Rate holds at 6.50%; home loan EMIs steady.", time: "2h ago" },
+                  { title: "Gold prices hit lifetime highs on festival demand.", time: "5h ago" },
+                  { title: "SIP flows hit historic ₹20k Crore mark in India.", time: "1d ago" }
+                ].map((item, idx) => (
+                  <div key={idx} style={{ paddingBottom: '4px', borderBottom: idx < 2 ? '1px solid rgba(255,255,255,0.05)' : 'none' }}>
+                    <div style={{ fontSize: '9px', fontWeight: '500', color: '#e2e8f0', lineHeight: '1.2' }}>{item.title}</div>
+                    <div style={{ fontSize: '7px', color: '#64748b' }}>{item.time}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {calculatorTab === 'AIAdvisor' && (
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '11px', animation: 'fadeIn 0.3s' }}>
+            <div className="phone-ui-card" style={{ padding: '8px', backgroundColor: 'rgba(6, 182, 212, 0.03)', borderColor: 'rgba(6, 182, 212, 0.15)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '10px', color: '#06b6d4', fontWeight: 'bold', marginBottom: '4px' }}>
+                <Sparkles size={12} /> Smart AI Loan Advisor
+              </div>
+              <span style={{ fontSize: '8px', color: '#94a3b8' }}>Get instant compounding tips based on compounding algorithms.</span>
+            </div>
+
+            {/* Chat Box */}
+            <div style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.04)', borderRadius: '8px', padding: '6px', display: 'flex', flexDirection: 'column', gap: '6px', minHeight: '90px' }}>
+              {advisorPrompt === null ? (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#64748b', fontSize: '8px', margin: 'auto', textAlign: 'center' }}>
+                  <MessageSquare size={10} /> Select a query below to ask AI Advisor...
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', animation: 'fadeIn 0.2s' }}>
+                  {/* User query bubble */}
+                  <div style={{ alignSelf: 'flex-end', backgroundColor: 'rgba(6, 182, 212, 0.2)', border: '1px solid rgba(6, 182, 212, 0.3)', color: '#f8fafc', padding: '4px 8px', borderRadius: '8px 8px 0 8px', fontSize: '8px', maxWidth: '85%' }}>
+                    {advisorPrompt === 1 ? "How to save home loan interest?" : "Is SIP better than Fixed Deposit?"}
+                  </div>
+                  {/* AI Response bubble */}
+                  <div style={{ alignSelf: 'flex-start', backgroundColor: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)', color: '#cbd5e1', padding: '4px 8px', borderRadius: '8px 8px 8px 0', fontSize: '8px', maxWidth: '95%', lineHeight: '1.3' }}>
+                    {advisorPrompt === 1 ? (
+                      <span>
+                        🔥 <strong>Interest Save:</strong> Prepaying just <strong>1 extra EMI</strong> annually on a ₹50L loan at 8.5% saves up to <strong>₹8.2 Lakhs</strong> interest & cuts tenure by <strong>3.5 years</strong>!
+                      </span>
+                    ) : (
+                      <span>
+                        📈 <strong>Compounding:</strong> Equity SIPs return <strong>12-14% CAGR</strong> over 5+ yrs, beating inflation, whereas FDs yield a fixed <strong>6.5-7.5%</strong> which loses value to taxes.
+                      </span>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Prompt Selector */}
+            <div style={{ display: 'flex', gap: '4px' }}>
+              <button 
+                onClick={() => setAdvisorPrompt(1)}
+                style={{ flex: 1, padding: '5px', fontSize: '8px', fontWeight: '600', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', backgroundColor: advisorPrompt === 1 ? 'rgba(6, 182, 212, 0.1)' : 'transparent', color: advisorPrompt === 1 ? '#06b6d4' : '#94a3b8', cursor: 'pointer' }}
+              >
+                Save Loan Interest?
+              </button>
+              <button 
+                onClick={() => setAdvisorPrompt(2)}
+                style={{ flex: 1, padding: '5px', fontSize: '8px', fontWeight: '600', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', backgroundColor: advisorPrompt === 2 ? 'rgba(6, 182, 212, 0.1)' : 'transparent', color: advisorPrompt === 2 ? '#06b6d4' : '#94a3b8', cursor: 'pointer' }}
+              >
+                SIP vs FD analysis?
+              </button>
             </div>
           </div>
         )}
